@@ -1,5 +1,12 @@
 # Renidly Python SDK
 
+[![PyPI version](https://img.shields.io/pypi/v/renidly.svg)](https://pypi.org/project/renidly/)
+[![Python versions](https://img.shields.io/pypi/pyversions/renidly.svg)](https://pypi.org/project/renidly/)
+[![CI](https://github.com/renidly/renidly-python/actions/workflows/ci.yml/badge.svg)](https://github.com/renidly/renidly-python/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Typed](https://img.shields.io/badge/typed-mypy-blue.svg)](https://mypy-lang.org/)
+
 The official Python SDK for the [Renidly](https://renidly.com) B2B professional data APIs — resolve, search, enrich, and verify professional identities (people, organizations, institutions, skills, professional activity, job opportunities, and business email) through one clean, typed client.
 
 ```python
@@ -401,6 +408,10 @@ Renidly("rnd-...", http_client=httpx.Client(limits=httpx.Limits(max_connections=
 
 Questions or issues? Open one on [GitHub](https://github.com/renidly/renidly-python/issues).
 
+## Contributing
+
+Contributions are welcome and appreciated — bug reports, docs, tests, and features alike. See **[CONTRIBUTING.md](CONTRIBUTING.md)** to get set up in a couple of minutes, and please review our [Code of Conduct](CODE_OF_CONDUCT.md). Found a security issue? See [SECURITY.md](SECURITY.md).
+
 ## License
 
-MIT
+[MIT](LICENSE) © Renidly

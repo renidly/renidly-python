@@ -1,0 +1,42 @@
+name: 🐛 Bug report
+description: Report a problem with the Renidly Python SDK
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to file a report! Please fill in the details below.
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear description of the bug and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: The smallest snippet that reproduces the issue. Redact your API key.
+      render: python
+    validations:
+      required: true
+  - type: textarea
+    id: traceback
+    attributes:
+      label: Traceback / output
+      description: The full error output, if any.
+      render: shell
+  - type: input
+    id: sdk-version
+    attributes:
+      label: renidly version
+      placeholder: "0.1.0  (python -c 'import renidly; print(renidly.__version__)')"
+    validations:
+      required: true
+  - type: input
+    id: python-version
+    attributes:
+      label: Python version
+      placeholder: "3.11"
+    validations:
+      required: true

@@ -41,6 +41,7 @@ print(person.headline, company.name, email.deliverable)
 - [Automatic rate limiting](#automatic-rate-limiting)
 - [Async](#async)
 - [Response objects](#response-objects)
+- [Credits & response metadata](#credits--response-metadata)
 - [Advanced](#advanced)
 - [Requirements & support](#requirements--support)
 
@@ -215,6 +216,9 @@ page.has_more        # is there more?
 # ...or walk EVERY page lazily (fetches as it goes, one page in memory at a time)
 for person in renidly.data.people.search(title="cto").auto_paging_iter():
     print(person.headline)
+
+# each page is a separate billed request — see its cost/balance on .meta
+print(page.meta.credit_consumed, page.meta.remaining_balance)
 ```
 
 ---
@@ -368,12 +372,47 @@ t = renidly.account.tier()
 t.current_tier.name              # nested attribute access, arbitrarily deep
 t.model_dump()                   # convert to a plain dict anytime
 
-# HTTP metadata is attached to every object
-t.last_response.status_code
-t.last_response.request_id
+# HTTP metadata is attached to every object under .meta (see next section)
+t.meta.status_code
+t.meta.request_id
 ```
 
-Prefer the raw envelope? Set `unwrap_data_obj=False` and every call returns `APIResponse(success=..., data=..., message=...)`.
+Prefer the raw envelope? Set `unwrap_data_obj=False` and every call returns `APIResponse(success=..., data=..., message=...)` — which also carries `.meta`.
+
+---
+
+## Credits & response metadata
+
+Every result carries a `.meta` object describing the HTTP call that produced it — including **how many credits it cost and your balance afterward**. It's kept separate from the response data, so `person.headline` is your data and `person.meta.credit_consumed` is billing info.
+
+```python
+person = renidly.data.people.retrieve(id="prsn_06d0d44d…")
+
+person.meta.credit_consumed      # -> 1.0   credits charged for THIS request
+person.meta.remaining_balance    # -> 19813.0  balance after the charge
+person.meta.status_code          # -> 200
+person.meta.request_id           # server request id (if provided)
+person.meta.headers              # raw response headers (dict)
+person.meta.body                 # parsed JSON envelope
+person.meta.raw_body             # raw response text
+person.meta.raw_http             # the underlying httpx.Response (everything else)
+```
+
+`.meta` is on **every** result — single objects, list pages, and each item in a page:
+
+```python
+page = renidly.data.people.search(title="cto")
+page.meta.credit_consumed        # cost of fetching this page
+page[0].meta.remaining_balance   # same page → same balance
+```
+
+Notes:
+
+- `credit_consumed` / `remaining_balance` are `None` for endpoints that aren't credit-billed (e.g. `account.*`) or when a request wasn't charged (errors, cached hits, zero-result billing).
+- **Result-billed** endpoints report the real dynamic amount — e.g. `emails.prospects("acme.com", kind="full")` returning 18 emails shows `meta.credit_consumed == 18`.
+- **Cached** responses are served free: `meta.credit_consumed == 0` with the balance unchanged.
+- During `auto_paging_iter()`, each **page** is a separate billed request, so each item reflects **its own page's** `meta` (walk the items to see the balance step down per page).
+- `.last_response` remains as a deprecated alias for `.meta`.
 
 ---
 

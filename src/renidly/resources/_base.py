@@ -12,7 +12,7 @@ from __future__ import annotations
 from typing import Any, Callable, Dict, List, Optional, Tuple, Type
 
 from .._errors import NotFoundError
-from .._models import APIResponse, LastResponse, RenidlyModel
+from .._models import APIResponse, ResponseMeta, RenidlyModel
 from .._pagination import AsyncRenidlyList, RenidlyList
 from .._transport import Result
 
@@ -20,8 +20,8 @@ from .._transport import Result
 Paginator = Callable[[Dict[str, Any], Dict[str, Any]], Tuple[List[Any], bool, Optional[Dict[str, Any]], Optional[str]]]
 
 
-def _models(items: List[Any], model: Type[RenidlyModel], last: LastResponse) -> List[Any]:
-    return [model._build(it, last) for it in items]
+def _models(items: List[Any], model: Type[RenidlyModel], meta: ResponseMeta) -> List[Any]:
+    return [model._build(it, meta) for it in items]
 
 
 class _Base:
@@ -38,7 +38,7 @@ class _Base:
     def _apply_one(self, r: Result, model: Type[RenidlyModel]) -> Optional[Any]:
         cfg = self._cfg
         if not cfg.unwrap_data_obj:
-            return APIResponse._build(r.envelope, r.last_response)
+            return APIResponse._build(r.envelope, r.meta)
         if r.error is not None:
             if isinstance(r.error, NotFoundError):
                 if cfg.raise_on_not_found:
@@ -47,7 +47,7 @@ class _Base:
             if cfg.raise_on_api_error:
                 raise r.error
             return None
-        return None if r.data is None else model._build(r.data, r.last_response)
+        return None if r.data is None else model._build(r.data, r.meta)
 
     def _apply_list(
         self,
@@ -60,19 +60,20 @@ class _Base:
     ) -> Any:
         cfg = self._cfg
         if not cfg.unwrap_data_obj:
-            return APIResponse._build(r.envelope, r.last_response)
+            return APIResponse._build(r.envelope, r.meta)
         if r.error is not None:
             if cfg.raise_on_api_error:
                 raise r.error
             return list_cls([], has_more=False)
         items, has_more, next_params, next_cursor = paginator(r.envelope, params)
         return list_cls(
-            _models(items, model, r.last_response),
+            _models(items, model, r.meta),
             has_more=has_more,
             next_params=next_params,
             next_cursor=next_cursor,
             pager=pager,
             raw=r.envelope.get("pagination") or {},
+            meta=r.meta,
         )
 
 

@@ -28,7 +28,7 @@ from ._errors import (
     RenidlyError,
     ServiceUnavailableError,
 )
-from ._models import LastResponse
+from ._models import ResponseMeta
 from ._version import __version__
 
 # Single-record "resolved but empty" codes come back as HTTP 200 + success:false.
@@ -41,7 +41,7 @@ class Result:
     ok: bool
     data: Any
     envelope: Dict[str, Any]
-    last_response: LastResponse
+    meta: ResponseMeta
     error: Optional[RenidlyError]
 
 
@@ -49,11 +49,11 @@ def _request_id(headers: httpx.Headers) -> Optional[str]:
     return headers.get("x-request-id") or headers.get("x-renidly-request-id")
 
 
-def _map_error(status: int, env: Dict[str, Any], last: LastResponse) -> RenidlyError:
+def _map_error(status: int, env: Dict[str, Any], meta: ResponseMeta) -> RenidlyError:
     msg = env.get("message") or f"HTTP {status}"
     code = env.get("error_code")
     errors = env.get("errors") if isinstance(env.get("errors"), dict) else None
-    kw: Dict[str, Any] = dict(status_code=status, error_code=code, errors=errors, request_id=last.request_id)
+    kw: Dict[str, Any] = dict(status_code=status, error_code=code, errors=errors, request_id=meta.request_id)
     low = msg.lower()
     if status == 402 or code == "1080" or "insufficient" in low or "enough credit" in low:
         return InsufficientCreditsError(msg, **kw)
@@ -79,17 +79,24 @@ def _map_error(status: int, env: Dict[str, Any], last: LastResponse) -> RenidlyE
 
 
 def _parse(resp: httpx.Response) -> Result:
-    last = LastResponse(resp.status_code, dict(resp.headers), _request_id(resp.headers))
     try:
         env = resp.json()
         if not isinstance(env, dict):
             env = {"success": resp.is_success, "data": env}
     except ValueError:
         env = {"success": False, "message": resp.text[:500] or f"HTTP {resp.status_code}"}
+    meta = ResponseMeta(
+        resp.status_code,
+        dict(resp.headers),
+        _request_id(resp.headers),
+        body=env,
+        raw_body=resp.text,
+        raw_http=resp,
+    )
     ok = bool(env.get("success", resp.is_success)) and resp.is_success
     if ok:
-        return Result(True, env.get("data"), env, last, None)
-    return Result(False, env.get("data"), env, last, _map_error(resp.status_code, env, last))
+        return Result(True, env.get("data"), env, meta, None)
+    return Result(False, env.get("data"), env, meta, _map_error(resp.status_code, env, meta))
 
 
 def _is_retryable(err: RenidlyError) -> bool:

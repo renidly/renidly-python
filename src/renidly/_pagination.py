@@ -19,6 +19,8 @@ from typing import (
     TypeVar,
 )
 
+from ._models import ResponseMeta
+
 T = TypeVar("T")
 
 
@@ -34,6 +36,7 @@ class _BaseList(Generic[T]):
         next_cursor: Optional[str] = None,
         pager: Optional[Callable[[Dict[str, Any]], Any]] = None,
         raw: Optional[Dict[str, Any]] = None,
+        meta: Optional[ResponseMeta] = None,
     ) -> None:
         self.data: List[T] = data
         self.has_more = has_more
@@ -41,6 +44,12 @@ class _BaseList(Generic[T]):
         self._next_params = next_params
         self._pager = pager
         self._raw = raw or {}
+        self.meta = meta
+
+    @property
+    def last_response(self) -> Optional[ResponseMeta]:
+        """Deprecated alias for :attr:`meta`."""
+        return self.meta
 
     # list-like ergonomics over the CURRENT page
     def __iter__(self) -> Iterator[T]:

@@ -150,9 +150,10 @@ except RenidlyError as e:                      # catch-all
 # per-request overrides
 client.data.skills.search("golang", options={"timeout": 5, "api_key": "rnd-other"})
 
-# HTTP metadata on any object
+# HTTP metadata + credit accounting on any object, under .meta
 sk = client.data.skills.retrieve("skl_...")
-print(sk.last_response.status_code, sk.last_response.request_id)
+print(sk.meta.status_code, sk.meta.request_id)
+print("credits charged:", sk.meta.credit_consumed, "| balance left:", sk.meta.remaining_balance)
 
 # raw escape hatch for anything not yet wrapped
 env = client.raw_request("GET", "/people/search", service="data", params={"title": "cto"})

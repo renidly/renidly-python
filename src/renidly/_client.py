@@ -66,7 +66,7 @@ class Renidly:
     ) -> APIResponse:
         """Escape hatch: call any endpoint directly; returns the raw envelope."""
         r = self._transport.request(method, service, path, params=params, json=json, options=options)
-        return APIResponse._build(r.envelope, r.last_response)
+        return APIResponse._build(r.envelope, r.meta)
 
     def close(self) -> None:
         """Close the underlying HTTP client and release its connections."""
@@ -109,7 +109,7 @@ class AsyncRenidly:
     ) -> APIResponse:
         """Async escape hatch — call any endpoint directly. See :meth:`Renidly.raw_request`."""
         r = await self._transport.request(method, service, path, params=params, json=json, options=options)
-        return APIResponse._build(r.envelope, r.last_response)
+        return APIResponse._build(r.envelope, r.meta)
 
     async def close(self) -> None:
         """Close the underlying async HTTP client."""

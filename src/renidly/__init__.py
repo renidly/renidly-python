@@ -23,7 +23,7 @@ from ._errors import (
     RenidlyError,
     ServiceUnavailableError,
 )
-from ._models import APIResponse, LastResponse, RenidlyModel
+from ._models import APIResponse, LastResponse, ResponseMeta, RenidlyModel
 from ._pagination import AsyncRenidlyList, RenidlyList
 from ._version import __version__
 
@@ -33,6 +33,7 @@ __all__ = [
     "RenidlyConfig",
     "RenidlyModel",
     "APIResponse",
+    "ResponseMeta",
     "LastResponse",
     "RenidlyList",
     "AsyncRenidlyList",

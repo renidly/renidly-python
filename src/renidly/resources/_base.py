@@ -12,7 +12,7 @@ from __future__ import annotations
 from typing import Any, Callable, Dict, List, Optional, Tuple, Type
 
 from .._errors import NotFoundError
-from .._models import APIResponse, ResponseMeta, RenidlyModel
+from .._models import APIResponse, RenidlyModel, ResponseMeta
 from .._pagination import AsyncRenidlyList, RenidlyList
 from .._transport import Result
 

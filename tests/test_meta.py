@@ -1,9 +1,8 @@
 """Mocked unit tests for the ResponseMeta surface (`.meta` / `.last_response`)."""
 import httpx
-import pytest
 import respx
 
-from renidly import Renidly, RenidlyConfig, ResponseMeta, LastResponse
+from renidly import Renidly, RenidlyConfig, ResponseMeta
 
 
 def ok(data, pagination=None):

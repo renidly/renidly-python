@@ -235,6 +235,17 @@ class PeopleSearchParams(TypedDict, total=False):
     skill_count_min: int
     skill_count_max: int
     speaks_language: str
+    follower_count_min: int
+    company_size_min: int
+    company_size_max: int
+    industry: str
+    experience_min_years: int
+    function: str
+    function_min_years: int
+    description: str
+    exclude_titles: str
+    exclude_organization_slugs: str
+    exclude_industries: str
     cursor: str
     limit: int
 

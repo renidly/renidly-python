@@ -6,6 +6,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-09-26
+
+### Added
+
+- New `data.people.search()` filters, typed on `PeopleSearchParams` for IDE
+  autocomplete: `follower_count_min`, `company_size_min` / `company_size_max`,
+  `industry`, `experience_min_years`, `function`, `function_min_years`,
+  `description`, `exclude_titles`, `exclude_organization_slugs`, and
+  `exclude_industries`. Regenerated from the Data API OpenAPI spec.
+
 ## [0.2.1] — 2026-09-26
 
 ### Fixed
@@ -64,6 +74,8 @@ Initial public release.
 - Dynamic, drill-able response models with `.last_response` HTTP metadata.
 - Optional built-in client-side rate limiter (`auto_rate_limit`).
 
-[Unreleased]: https://github.com/renidly/renidly-python/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/renidly/renidly-python/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/renidly/renidly-python/compare/v0.2.1...v0.3.0
+[0.2.1]: https://github.com/renidly/renidly-python/compare/v0.1.1...v0.2.1
 [0.1.1]: https://github.com/renidly/renidly-python/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/renidly/renidly-python/releases/tag/v0.1.0

@@ -6,6 +6,27 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.2.1] — 2026-09-26
+
+### Fixed
+
+- `auto_rate_limit` now reads the per-minute limit for enterprise accounts too
+  (top-level `limit_per_minute`; `current_tier` is `null` for them). Previously
+  an enterprise account whose key did not start with `enterprise-` silently fell
+  back to 1 request/minute.
+- An undeterminable limit no longer throttles to 1 request/minute: the SDK emits
+  a `RuntimeWarning` and skips client-side throttling (server 429s are still
+  retried) until a later refresh succeeds.
+- The tier endpoint is no longer re-fetched on every request while the limit is
+  unknown; it is retried on the refresh interval or after a 429.
+- `AsyncRenidly(..., auto_rate_limit=True)` can be constructed outside a running
+  event loop on Python 3.9.
+
+### Changed
+
+- `enterprise-` keys no longer require `rate_limit_per_minute`; the fixed limit
+  is read from the account. The option remains as an override.
+
 ## [0.1.1] — 2026-07-26
 
 ### Added

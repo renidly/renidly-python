@@ -63,7 +63,8 @@ class RenidlyConfig:
     auto_rate_limit: bool = False
     """Throttle requests to stay under your per-minute limit automatically."""
     rate_limit_per_minute: Optional[int] = None
-    """Fixed per-minute limit. REQUIRED for enterprise keys; optional override otherwise."""
+    """Fixed per-minute limit. Optional: by default it is read from your account
+    (tier limit, or the fixed enterprise limit)."""
     rate_limit_safety: float = 1.0
     """Fraction of the limit to target (e.g. 0.9 leaves headroom for clock skew)."""
     rate_limit_refresh: float = 300.0

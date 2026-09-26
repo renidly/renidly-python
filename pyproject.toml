@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "renidly"
-version = "0.2.0"
+version = "0.2.1"
 description = "The official Python SDK for the Renidly B2B professional data APIs (Data, Live, Email, Account)."
 readme = "README.md"
 requires-python = ">=3.9"

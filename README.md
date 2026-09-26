@@ -321,7 +321,7 @@ renidly = Renidly("rnd-...", config=RenidlyConfig(
 | `raise_on_not_found` | `False` | `None` vs `NotFoundError` on empty lookups. |
 | `raise_on_api_error` | `True` | Raise vs return `None` on API errors. |
 | `auto_rate_limit` | `False` | Self-throttle to your tier's limit. |
-| `rate_limit_per_minute` | `None` | Fixed limit (required for enterprise keys). |
+| `rate_limit_per_minute` | `None` | Override the limit read from your account. |
 | `rate_limit_safety` | `1.0` | Fraction of the limit to target (e.g. `0.9`). |
 
 ---
@@ -331,14 +331,16 @@ renidly = Renidly("rnd-...", config=RenidlyConfig(
 Turn it on and the SDK keeps you under your per-minute limit automatically — no limiter to build.
 
 ```python
-# Regular key: the limit is read from your tier and refreshed automatically.
+# Any key (tiered or enterprise): the limit is read from your account.
 Renidly("rnd-...", config=RenidlyConfig(auto_rate_limit=True))
 
-# Enterprise key: the limit is fixed — supply it.
-Renidly("enterprise-...", config=RenidlyConfig(auto_rate_limit=True, rate_limit_per_minute=550))
+# Optional: override it with a fixed limit.
+Renidly("rnd-...", config=RenidlyConfig(auto_rate_limit=True, rate_limit_per_minute=550))
 ```
 
 It uses a sliding 60-second window so you never exceed the limit, and re-reads your tier after a `429`.
+If the limit can't be determined, the SDK emits a `RuntimeWarning` and does not throttle client-side
+(server `429`s are still retried) until a later refresh succeeds.
 
 ---
 

@@ -124,6 +124,7 @@ class FindParams(TypedDict, total=False):
     domain: str
 
 class InstitutionsAlumniParams(TypedDict, total=False):
+    institution_id: str
     current_only: bool
     degree: str
     field_of_study: str
@@ -178,6 +179,9 @@ class OrganizationActivitiesParams(TypedDict, total=False):
 
 class OrganizationAffiliatedParams(TypedDict, total=False):
     id: str
+
+class OrganizationEnrichBulkParams(TypedDict, total=False):
+    ids: str
 
 class OrganizationEnrichParams(TypedDict, total=False):
     id: str
@@ -255,6 +259,9 @@ class PersonEmploymentHistoryParams(TypedDict, total=False):
 class PersonEndorsementsParams(TypedDict, total=False):
     entityId: str
 
+class PersonEnrichBulkParams(TypedDict, total=False):
+    entityIds: str
+
 class PersonEnrichParams(TypedDict, total=False):
     entityId: str
     handle: str
@@ -291,4 +298,4 @@ class VerifyBatchParams(TypedDict, total=False):
 class VerifyParams(TypedDict, total=False):
     email: str
 
-__all__ = ["ActivityDetailsParams", "ActivityFeedParams", "ActivityReactionsParams", "ActivityRepliesByAuthorParams", "ActivityRepliesParams", "CompaniesBatchEnrichParams", "CompaniesCompanyParams", "CompaniesEmployeesParams", "CompaniesSearchParams", "DiscoverOpportunitiesParams", "DiscoverOrganizationsParams", "DiscoverPeopleParams", "FindBatchParams", "FindLinkedinParams", "FindParams", "InstitutionsAlumniParams", "InstitutionsInstitutionParams", "InstitutionsSearchParams", "JobChangesSearchParams", "OpportunityByPersonParams", "OpportunityDetailsParams", "OpportunityHiringTeamParams", "OpportunityRelatedViewsParams", "OpportunitySimilarParams", "OrganizationActivitiesParams", "OrganizationAffiliatedParams", "OrganizationEnrichParams", "OrganizationHeadcountParams", "OrganizationOpportunitiesParams", "OrganizationResolveSlugParams", "OrganizationSimilarParams", "PeopleBatchEnrichParams", "PeopleProfileParams", "PeopleSearchParams", "PersonEmploymentHistoryParams", "PersonEndorsementsParams", "PersonEnrichParams", "PersonInterestsParams", "PersonLookalikesParams", "PersonResolveHandleParams", "ProspectsParams", "ReverseParams", "SkillsSearchParams", "SkillsSkillParams", "VerifyBatchParams", "VerifyParams"]
+__all__ = ["ActivityDetailsParams", "ActivityFeedParams", "ActivityReactionsParams", "ActivityRepliesByAuthorParams", "ActivityRepliesParams", "CompaniesBatchEnrichParams", "CompaniesCompanyParams", "CompaniesEmployeesParams", "CompaniesSearchParams", "DiscoverOpportunitiesParams", "DiscoverOrganizationsParams", "DiscoverPeopleParams", "FindBatchParams", "FindLinkedinParams", "FindParams", "InstitutionsAlumniParams", "InstitutionsInstitutionParams", "InstitutionsSearchParams", "JobChangesSearchParams", "OpportunityByPersonParams", "OpportunityDetailsParams", "OpportunityHiringTeamParams", "OpportunityRelatedViewsParams", "OpportunitySimilarParams", "OrganizationActivitiesParams", "OrganizationAffiliatedParams", "OrganizationEnrichBulkParams", "OrganizationEnrichParams", "OrganizationHeadcountParams", "OrganizationOpportunitiesParams", "OrganizationResolveSlugParams", "OrganizationSimilarParams", "PeopleBatchEnrichParams", "PeopleProfileParams", "PeopleSearchParams", "PersonEmploymentHistoryParams", "PersonEndorsementsParams", "PersonEnrichBulkParams", "PersonEnrichParams", "PersonInterestsParams", "PersonLookalikesParams", "PersonResolveHandleParams", "ProspectsParams", "ReverseParams", "SkillsSearchParams", "SkillsSkillParams", "VerifyBatchParams", "VerifyParams"]

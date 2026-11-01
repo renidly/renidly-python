@@ -6,6 +6,15 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-11-02
+
+### Added
+
+- `phones` namespace for the Phone API (sync and async):
+  `phones.find(url)` returns a person's phone numbers from their profile URL or
+  username, and `phones.reverse(phone, country=...)` returns the people behind
+  a number.
+
 ## [0.3.0] — 2026-09-26
 
 ### Added
@@ -74,7 +83,8 @@ Initial public release.
 - Dynamic, drill-able response models with `.last_response` HTTP metadata.
 - Optional built-in client-side rate limiter (`auto_rate_limit`).
 
-[Unreleased]: https://github.com/renidly/renidly-python/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/renidly/renidly-python/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/renidly/renidly-python/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/renidly/renidly-python/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/renidly/renidly-python/compare/v0.1.1...v0.2.1
 [0.1.1]: https://github.com/renidly/renidly-python/compare/v0.1.0...v0.1.1

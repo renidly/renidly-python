@@ -9,6 +9,7 @@ from renidly import (
     InsufficientCreditsError,
     InvalidRequestError,
     NotFoundError,
+    PermissionDeniedError,
     RateLimitError,
     Renidly,
     RenidlyConfig,
@@ -165,3 +166,38 @@ async def test_async_client():
     async with AsyncRenidly("k") as r:
         tiers = await r.account.tiers()
         assert [t.name async for t in tiers.auto_paging_iter()] == ["Testing"]
+
+
+@respx.mock
+def test_phones_find():
+    route = respx.get(f"{BASE}/api/phones/v1/find").mock(
+        return_value=httpx.Response(200, json=ok({"found": True, "person": {"full_name": "A B"}, "phones": [{"phone": "+16502530000"}]})))
+    r = Renidly("k").phones.find("ryanroslansky")
+    assert route.calls.last.request.url.params["url"] == "ryanroslansky"
+    assert r.found and r.phones[0].phone == "+16502530000"
+
+
+@respx.mock
+def test_phones_reverse_country_only_when_given():
+    route = respx.get(f"{BASE}/api/phones/v1/reverse").mock(
+        return_value=httpx.Response(200, json=ok({"phone": "+16502530000", "found": False, "candidates": []})))
+    c = Renidly("k")
+    c.phones.reverse("+1 650 253 0000")
+    assert "country" not in route.calls.last.request.url.params
+    c.phones.reverse("020 7946 0958", country="GB")
+    assert route.calls.last.request.url.params["country"] == "GB"
+
+
+@respx.mock
+def test_phones_opted_out():
+    respx.get(f"{BASE}/api/phones/v1/find").mock(return_value=httpx.Response(
+        403, json=fail(403, "This contact has opted out and their information cannot be returned.", "OPTED_OUT")))
+    with pytest.raises(PermissionDeniedError):
+        Renidly("k").phones.find("x")
+
+
+@respx.mock
+async def test_async_phones_find():
+    respx.get(f"{BASE}/api/phones/v1/find").mock(return_value=httpx.Response(200, json=ok({"found": False, "person": None, "phones": []})))
+    r = await AsyncRenidly("k").phones.find("x")
+    assert r.found is False

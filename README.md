@@ -21,7 +21,7 @@ email   = renidly.emails.verify("sundar@google.com")
 print(person.headline, company.name, email.deliverable)
 ```
 
-- **One client, four products** — `data`, `live`, `emails`, `account`, all off the same key.
+- **One client, five products** — `data`, `live`, `emails`, `phones`, `account`, all off the same key.
 - **Fully typed** — method names, parameters, and returns autocomplete in your IDE (ships `py.typed`).
 - **Batteries included** — automatic retries, transparent pagination, batch jobs, a typed error hierarchy, and an optional self-tuning rate limiter.
 - **Sync and async** — identical surface; just `await`.
@@ -33,7 +33,7 @@ print(person.headline, company.name, email.deliverable)
 - [Install](#install)
 - [Quickstart](#quickstart)
 - [Authentication](#authentication)
-- [The four products](#the-four-products)
+- [The five products](#the-five-products)
 - [Pagination](#pagination)
 - [Batch jobs](#batch-jobs)
 - [Errors](#errors)
@@ -102,7 +102,7 @@ Grab your key from [Workspace → API Keys](https://renidly.com/dashboard/key).
 
 ---
 
-## The four products
+## The five products
 
 ### `data` — clean, queryable records
 
@@ -188,6 +188,20 @@ renidly.emails.prospects("acme.com", kind="verified_only")     # known contacts 
 renidly.emails.verify_batch(["a@x.com", "b@y.com"])
 renidly.emails.find_batch([{"first_name": "A", "last_name": "B", "domain": "acme.com"}])
 ```
+
+### `phones` — phone numbers from a profile, and the person behind a number
+
+```python
+p = renidly.phones.find("https://www.linkedin.com/in/ryanroslansky")  # or just "ryanroslansky"
+if p.found: print(p.phones[0].phone)                                   # "+1…" (E.164)
+
+r = renidly.phones.reverse("+1 (650) 253-0000")                        # any common format
+renidly.phones.reverse("020 7946 0958", country="GB")                  # number without a country code
+for c in r.candidates: print(c.full_name)                              # up to 3 when shared
+```
+
+Billed by outcome: the endpoint's cost when a result is returned; `find` costs 1 credit when the
+profile doesn't exist or has no numbers; `reverse` is free for an unknown number.
 
 ### `account` — balance, tier, and pricing
 

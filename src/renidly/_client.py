@@ -1,7 +1,7 @@
 """The public clients: ``Renidly`` (sync) and ``AsyncRenidly`` (async).
 
 Same surface, same method names; the async client just needs ``await``. Product
-namespaces hang off the client: ``r.data``, ``r.live``, ``r.emails``, ``r.account``.
+namespaces hang off the client: ``r.data``, ``r.live``, ``r.emails``, ``r.phones``, ``r.account``.
 
 Configuration goes through one object, :class:`RenidlyConfig`, so there is a
 single place (with autocomplete) for every option::
@@ -27,6 +27,7 @@ from .resources.account import Account, AsyncAccount
 from .resources.data import AsyncData, Data
 from .resources.emails import AsyncEmails, Emails
 from .resources.live import AsyncLive, Live
+from .resources.phones import AsyncPhones, Phones
 
 
 def _resolve(api_key: Optional[str], config: Optional[RenidlyConfig]) -> RenidlyConfig:
@@ -53,6 +54,7 @@ class Renidly:
         self.data = Data(self)
         self.emails = Emails(self)
         self.live = Live(self)
+        self.phones = Phones(self)
 
     def raw_request(
         self,
@@ -96,6 +98,7 @@ class AsyncRenidly:
         self.data = AsyncData(self)
         self.emails = AsyncEmails(self)
         self.live = AsyncLive(self)
+        self.phones = AsyncPhones(self)
 
     async def raw_request(
         self,

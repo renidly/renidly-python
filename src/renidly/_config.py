@@ -1,7 +1,7 @@
 """Client configuration and the service routing table.
 
 ``RenidlyConfig`` is the public, user-facing config object — build it with just
-the fields you care about and pass ``Renidly(config=...)``. The four products
+the fields you care about and pass ``Renidly(config=...)``. The five products
 live under one host but different path prefixes, and the Account product uses a
 *different* auth header (``X-AUTHAPI-Key``); the SDK hides that entirely.
 """
@@ -20,6 +20,7 @@ SERVICES: Dict[str, tuple] = {
     "data": ("/api/data/v1", DATA_HEADER),
     "live": ("/api/v2", DATA_HEADER),
     "emails": ("/api/emails/v1", DATA_HEADER),
+    "phones": ("/api/phones/v1", DATA_HEADER),
     "account": ("/api/panel", ACCOUNT_HEADER),
 }
 

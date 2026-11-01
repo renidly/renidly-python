@@ -9,7 +9,7 @@ endpoint pages by cursor (``nextCursor``) or offset (``start``/``count``).
 """
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 from typing_extensions import Unpack
 
@@ -59,6 +59,21 @@ class LivePeople(SyncResource):
             print(p.firstName)
         """
         return self._one(_SVC, "GET", "/person/enrich", params={"entityId": entity_id, "handle": handle}, options=options)
+
+    def enrich_bulk(self, entity_ids: Iterable[str], *, options=None) -> Optional[RenidlyModel]:
+        """Retrieve up to 100 full live profiles in one call.
+
+        Calls ``GET /api/v2/person/enrich-bulk``. Returns ``requested``,
+        ``count``, ``profiles`` (same shape as :meth:`enrich`, in any order —
+        match by ``entityId``) and ``notFound``. One credit per unique id, found
+        or not; one malformed id rejects the whole batch, free.
+
+        Example::
+
+            b = client.live.people.enrich_bulk(["ACoAA…", "ACoAA…"])
+            for p in b.profiles: print(p.entityId, p.firstName)
+        """
+        return self._one(_SVC, "GET", "/person/enrich-bulk", params={"entityIds": ",".join(entity_ids)}, options=options)
 
     def resolve_handle(self, handle: str, *, options=None) -> Optional[RenidlyModel]:
         """Resolve a public handle to a stable ``entityId`` (do this once, reuse it).
@@ -258,6 +273,22 @@ class LiveOrganizations(SyncResource):
         """
         return self._one(_SVC, "GET", "/organization/enrich", params={"id": id}, options=options)
 
+    def enrich_bulk(self, ids: Iterable[str], *, options=None) -> Optional[RenidlyModel]:
+        """Retrieve up to 100 full company profiles in one call.
+
+        Calls ``GET /api/v2/organization/enrich-bulk`` (numeric ids). Returns
+        ``requested``, ``count``, ``organizations`` (same shape as
+        :meth:`enrich`, in any order — match by ``id``) and ``notFound``. Each
+        unique id is billed like :meth:`enrich`, found or not; one malformed id
+        rejects the whole batch, free.
+
+        Example::
+
+            b = client.live.organizations.enrich_bulk(["1441", "1035"])
+            for o in b.organizations: print(o.id, o.name)
+        """
+        return self._one(_SVC, "GET", "/organization/enrich-bulk", params={"ids": ",".join(ids)}, options=options)
+
     def headcount(self, id: str, *, options=None) -> Optional[RenidlyModel]:
         """Get a company's employee count + distribution buckets.
 
@@ -387,6 +418,10 @@ class AsyncLivePeople(AsyncResource):
         """Full live profile. See :meth:`LivePeople.enrich`."""
         return await self._one(_SVC, "GET", "/person/enrich", params={"entityId": entity_id, "handle": handle}, options=options)
 
+    async def enrich_bulk(self, entity_ids, *, options=None) -> Optional[RenidlyModel]:
+        """Up to 100 full live profiles. See :meth:`LivePeople.enrich_bulk`."""
+        return await self._one(_SVC, "GET", "/person/enrich-bulk", params={"entityIds": ",".join(entity_ids)}, options=options)
+
     async def resolve_handle(self, handle, *, options=None) -> Optional[RenidlyModel]:
         """Handle -> entityId. See :meth:`LivePeople.resolve_handle`."""
         return await self._one(_SVC, "GET", "/person/resolve-handle", params={"handle": handle}, options=options)
@@ -462,6 +497,10 @@ class AsyncLiveOrganizations(AsyncResource):
     async def enrich(self, id, *, options=None) -> Optional[RenidlyModel]:
         """Company profile. See :meth:`LiveOrganizations.enrich`."""
         return await self._one(_SVC, "GET", "/organization/enrich", params={"id": id}, options=options)
+
+    async def enrich_bulk(self, ids, *, options=None) -> Optional[RenidlyModel]:
+        """Up to 100 company profiles. See :meth:`LiveOrganizations.enrich_bulk`."""
+        return await self._one(_SVC, "GET", "/organization/enrich-bulk", params={"ids": ",".join(ids)}, options=options)
 
     async def headcount(self, id, *, options=None) -> Optional[RenidlyModel]:
         """Headcount. See :meth:`LiveOrganizations.headcount`."""

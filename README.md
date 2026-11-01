@@ -141,6 +141,7 @@ Resolve a single subject or run a discovery search.
 # People — resolve a public handle to a stable id once, then reuse it
 eid = renidly.live.people.resolve_handle("williamhgates").entityId
 renidly.live.people.enrich(eid)                       # or handle="..."
+renidly.live.people.enrich_bulk([eid, ...])           # up to 100 per call
 renidly.live.people.employment_history(eid)
 renidly.live.people.endorsements(eid)
 renidly.live.people.lookalikes(eid)
@@ -149,6 +150,7 @@ renidly.live.people.interests(eid)
 # Organizations
 oid = renidly.live.organizations.resolve_slug("google").id
 renidly.live.organizations.enrich(oid)
+renidly.live.organizations.enrich_bulk([oid, ...])    # up to 100 per call
 renidly.live.organizations.headcount(oid)
 renidly.live.organizations.similar(oid)
 renidly.live.organizations.affiliated(oid)

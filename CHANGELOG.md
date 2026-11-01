@@ -6,6 +6,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-11-02
+
+### Added
+
+- `live.people.enrich_bulk(entity_ids)` and `live.organizations.enrich_bulk(ids)`: up to 100 full live profiles or companies per call. Each returns
+  `requested`, `count`, the records, and `notFound`.
+
 ## [0.4.1] — 2026-11-02
 
 ### Changed
@@ -91,7 +98,8 @@ Initial public release.
 - Dynamic, drill-able response models with `.last_response` HTTP metadata.
 - Optional built-in client-side rate limiter (`auto_rate_limit`).
 
-[Unreleased]: https://github.com/renidly/renidly-python/compare/v0.4.1...HEAD
+[Unreleased]: https://github.com/renidly/renidly-python/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/renidly/renidly-python/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/renidly/renidly-python/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/renidly/renidly-python/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/renidly/renidly-python/compare/v0.2.1...v0.3.0

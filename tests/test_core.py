@@ -201,3 +201,16 @@ async def test_async_phones_find():
     respx.get(f"{BASE}/api/phones/v1/find").mock(return_value=httpx.Response(200, json=ok({"found": False, "person": None, "phones": []})))
     r = await AsyncRenidly("k").phones.find("x")
     assert r.found is False
+
+
+@respx.mock
+async def test_live_enrich_bulk_joins_ids():
+    people = respx.get(f"{BASE}/api/v2/person/enrich-bulk").mock(
+        return_value=httpx.Response(200, json=ok({"requested": 2, "count": 1, "profiles": [{"entityId": "ACoAA1"}], "notFound": ["ACoAA2"]})))
+    orgs = respx.get(f"{BASE}/api/v2/organization/enrich-bulk").mock(
+        return_value=httpx.Response(200, json=ok({"requested": 2, "count": 2, "organizations": [], "notFound": []})))
+    r = Renidly("k").live.people.enrich_bulk(["ACoAA1", "ACoAA2"])
+    assert people.calls.last.request.url.params["entityIds"] == "ACoAA1,ACoAA2"
+    assert r.notFound == ["ACoAA2"]
+    await AsyncRenidly("k").live.organizations.enrich_bulk(["1441", "1035"])
+    assert orgs.calls.last.request.url.params["ids"] == "1441,1035"
